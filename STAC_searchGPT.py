@@ -1,5 +1,5 @@
 import streamlit as st
-import openai
+from openai import OpenAI
 from pystac_client import Client
 from geopy.geocoders import Nominatim
 import pycountry
@@ -8,7 +8,7 @@ import os
 from dotenv import load_dotenv
 
 load_dotenv()
-openai.api_key = os.getenv("OPENAI_API_KEY")
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Function to check if two bounding boxes intersect
 def bbox_intersects(spatial_extent, bbox_filter):
@@ -43,13 +43,14 @@ def temporal_intersects(temporal_extent, temporal_filter):
     return True  # Intersecting
 
 # Function to generate text using OpenAI ChatCompletion
-prompt = "You are a geospatial data expert and good at ESG research."
 def generate_text(prompt):
     try:
-        response = client.completions.create(
-            model="gpt-3.5-turbo-instruct",
-            prompt=prompt,
-            max_tokens=500
+        response = client.chat.completions.create(
+            model="gpt-3.5-turbo",
+            messages=[
+                {"role": "system", "content": "You are a geospatial data expert and good at ESG research."},
+                {"role": "user", "content": prompt}
+            ]
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
