@@ -44,6 +44,9 @@ def temporal_intersects(temporal_extent, temporal_filter):
 
 # Function to generate text using OpenAI ChatCompletion
 def generate_text(prompt):
+    from openai import OpenAI
+    client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+    
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
         messages=[
