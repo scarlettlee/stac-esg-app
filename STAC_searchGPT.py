@@ -43,14 +43,13 @@ def temporal_intersects(temporal_extent, temporal_filter):
     return True  # Intersecting
 
 # Function to generate text using OpenAI ChatCompletion
+prompt = "You are a geospatial data expert and good at ESG research."
 def generate_text(prompt):
     try:
-        response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
-            messages=[
-                {"role": "system", "content": "You are a geospatial data expert and good at ESG research."},
-                {"role": "user", "content": prompt}
-            ]
+        response = client.completions.create(
+            model="gpt-3.5-turbo-instruct",
+            prompt=prompt,
+            max_tokens=500
         )
         return response.choices[0].message.content.strip()
     except Exception as e:
