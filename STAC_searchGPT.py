@@ -1,4 +1,5 @@
 import streamlit as st
+import openai
 from openai import OpenAI
 from pystac_client import Client
 from geopy.geocoders import Nominatim
@@ -6,11 +7,9 @@ import pycountry
 from datetime import datetime, timezone
 import os
 from dotenv import load_dotenv
-from openai import AsyncOpenAI
-import asyncio
 
 load_dotenv()
-client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Function to check if two bounding boxes intersect
 def bbox_intersects(spatial_extent, bbox_filter):
@@ -45,9 +44,9 @@ def temporal_intersects(temporal_extent, temporal_filter):
     return True  # Intersecting
 
 # Function to generate text using OpenAI ChatCompletion
-async def generate_text(prompt):
+def generate_text(prompt):
     try:
-        response = await client.chat.completions.create(
+        response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a geospatial data expert and good at ESG research."},
@@ -81,10 +80,10 @@ if st.sidebar.button("Search and Generate Data insights"):
 
     # Connect to the STAC API
     stac_url = "https://planetarycomputer.microsoft.com/api/stac/v1"
-    client = Client.open(stac_url)
+    client_st = Client.open(stac_url)
 
     # List all collections
-    collections = client.get_collections()
+    collections = client_st.get_collections()
 
     # Filter collections based on spatial and temporal criteria
     matching_collections = []
