@@ -1,0 +1,6 @@
+streamlit
+openai
+pystac-client
+geopy
+python-dotenv
+pycountry
