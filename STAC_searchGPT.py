@@ -6,9 +6,11 @@ import pycountry
 from datetime import datetime, timezone
 import os
 from dotenv import load_dotenv
+from openai import AsyncOpenAI
+import asyncio
 
 load_dotenv()
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+client = AsyncOpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
 # Function to check if two bounding boxes intersect
 def bbox_intersects(spatial_extent, bbox_filter):
@@ -43,9 +45,9 @@ def temporal_intersects(temporal_extent, temporal_filter):
     return True  # Intersecting
 
 # Function to generate text using OpenAI ChatCompletion
-def generate_text(prompt):
+async def generate_text(prompt):
     try:
-        response = client.chat.completions.create(
+        response = await client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
                 {"role": "system", "content": "You are a geospatial data expert and good at ESG research."},
