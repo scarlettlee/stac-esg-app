@@ -4,3 +4,4 @@ pystac-client
 geopy
 python-dotenv
 pycountry
+anthropic>=0.18.0
