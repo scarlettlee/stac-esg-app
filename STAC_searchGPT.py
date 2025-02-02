@@ -155,7 +155,7 @@ if st.sidebar.button("Search and Generate Data insights"):
 
         # Extract relevant information
         collection_info = []
-        for collection in matching_collections[0:5]:
+        for collection in matching_collections:
             info = {
                 "name": collection.id,
                 "description": collection.description
@@ -166,7 +166,7 @@ if st.sidebar.button("Search and Generate Data insights"):
         st.session_state.collection_info = collection_info
 
         # Generate summary
-        prompt = f"Generate insights on how the following geospatial data could help with the ESG estimate of {location}:\n\n{collection_info}"
+        prompt = f"Summarize insights on how the following geospatial data could help with the ESG estimate of {location}:\n\n{matching_collections}"
         st.session_state.report = generate_text(prompt)
 
 # Display results (outside the button click handler)
@@ -178,8 +178,8 @@ if st.session_state.search_performed:
 
     # Show the collections and insights
     if st.session_state.collection:
-        st.subheader("Available Data Collections: ", len(matching_collections))
-        st.write("Found matching collections:", matching_collections)
+        matching_collections = [collection for collection in st.session_state.collection]
+        st.subheader(f"Available Data Collections: {len(matching_collections)}")
         st.json(st.session_state.collection)
     
     # # Display collections and insights
