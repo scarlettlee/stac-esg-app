@@ -10,6 +10,7 @@ from dotenv import load_dotenv
 import folium
 from streamlit_folium import st_folium
 
+# Load environment variables
 load_dotenv()
 openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
 
@@ -19,6 +20,7 @@ if 'search_performed' not in st.session_state:
     st.session_state.search_results = None
     st.session_state.location_name = None
     st.session_state.bbox = None
+    st.session_state.collection = None
     st.session_state.collection_info = None
     st.session_state.report = None
 
@@ -149,7 +151,7 @@ if st.sidebar.button("Search and Generate Data insights"):
                 matching_collections.append(collection)
 
         # Show the matching collections
-        st.write("Found matching collections:", len(matching_collections))
+        st.session_state.collection = matching_collections
 
         # Extract relevant information
         collection_info = []
@@ -169,18 +171,21 @@ if st.sidebar.button("Search and Generate Data insights"):
 
 # Display results (outside the button click handler)
 if st.session_state.search_performed:
-    # Show the area being searched
+    # Show the area being searched without overlapping previous st.write results
     st.info(f"Searching in area: {st.session_state.location_name}")
-    
-    # Display the map
-    st.subheader("Search Area")
     map = display_area_map(st.session_state.bbox)
     st_folium(map, width=700)
+
+    # Show the collections and insights
+    if st.session_state.collection:
+        st.subheader("Available Data Collections: ", len(matching_collections))
+        st.write("Found matching collections:", matching_collections)
+        st.json(st.session_state.collection)
     
-    # Display collections and insights
-    if st.session_state.collection_info:
-        st.subheader("Available Data Collections")
-        st.json(st.session_state.collection_info)
+    # # Display collections and insights
+    # if st.session_state.collection_info:
+    #     st.subheader("Available Data Collections")
+    #     st.json(st.session_state.collection_info)
     
     if st.session_state.report:
         st.subheader("ESG Insights")
