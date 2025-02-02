@@ -188,5 +188,5 @@ if st.session_state.search_performed:
     #     st.json(st.session_state.collection_info)
     
     if st.session_state.report:
-        st.subheader("ESG Insights")
+        st.subheader("ESG Insights:")
         st.write(st.session_state.report)
