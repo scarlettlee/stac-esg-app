@@ -13,6 +13,8 @@ from streamlit_folium import st_folium
 # Load environment variables
 load_dotenv()
 openai_client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Configure the page to use wide mode by default
+st.set_page_config(layout="wide")
 
 # Add this near the top of the file after imports
 if 'search_performed' not in st.session_state:
@@ -171,22 +173,26 @@ if st.sidebar.button("Search and Generate Data insights"):
 
 # Display results (outside the button click handler)
 if st.session_state.search_performed:
-    # Show the area being searched without overlapping previous st.write results
-    st.info(f"Searching in area: {st.session_state.location_name}")
-    map = display_area_map(st.session_state.bbox)
-    st_folium(map, width=700)
+    # Create a two-column layout
+    col1, col2 = st.columns(2)
+    
+    # Display the search results in the first column
+    with col1:
+        # Show the area being searched without overlapping previous st.write results
+        st.info(f"Searching in area: {st.session_state.location_name}")
+        map = display_area_map(st.session_state.bbox)
+        st_folium(map, width=None, height=800)
+        
+        # Show the collections and insights
+        if st.session_state.collection:
+            matching_collections = [collection for collection in st.session_state.collection]
+            st.subheader(f"Available Data Collections: {len(matching_collections)}")
+            # Create expandable section for the JSON data
+            with st.expander("View Collection Details"):
+                st.json(st.session_state.collection)
 
-    # Show the collections and insights
-    if st.session_state.collection:
-        matching_collections = [collection for collection in st.session_state.collection]
-        st.subheader(f"Available Data Collections: {len(matching_collections)}")
-        st.json(st.session_state.collection)
-    
-    # # Display collections and insights
-    # if st.session_state.collection_info:
-    #     st.subheader("Available Data Collections")
-    #     st.json(st.session_state.collection_info)
-    
-    if st.session_state.report:
-        st.subheader("ESG Insights:")
-        st.write(st.session_state.report)
+    with col2:      
+        if st.session_state.report:
+            st.subheader("ESG Insights:")
+            st.write(st.session_state.report)
+            # st.write("The insights will be displayed here.")
