@@ -14,12 +14,14 @@ RUN apt-get update && apt-get install -y \
 COPY requirements.txt .
 
 # Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip3 install --no-cache-dir -r requirements.txt
 
-# Copy the rest of the application
-COPY . .
+# Copy the source code
+COPY src/ ./src/
+COPY .env .
 
 # Set environment variables
+ENV PYTHONPATH=/app
 ENV STREAMLIT_SERVER_PORT=8080
 ENV STREAMLIT_SERVER_ADDRESS=0.0.0.0
 ENV STREAMLIT_SERVER_HEADLESS=true
@@ -28,4 +30,4 @@ ENV STREAMLIT_SERVER_HEADLESS=true
 EXPOSE 8080
 
 # Command to run the application
-CMD streamlit run --server.port 8080 --server.address 0.0.0.0 STAC_searchGPT.py
+CMD ["streamlit", "run", "src/app.py", "--server.port=8080", "--server.address=0.0.0.0"]
