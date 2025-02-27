@@ -20,4 +20,5 @@ def get_bounding_box(location: str) -> Union[list[float], None]:
         return None
     except Exception as e:
         st.error(f"Error getting location: {str(e)}")
+        st.error("Detailed error information:", exc_info=True)
         return None
