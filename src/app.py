@@ -6,6 +6,7 @@ from components.maps import display_area_map
 from services.geocoding import get_bounding_box
 from services.stac_service import search_stac_collections
 from services.openai_service import generate_text
+from utils.extract_subsector_info import extract_subsector_info
 from streamlit_folium import st_folium
 import logging
 
@@ -30,6 +31,8 @@ def init_session_state():
         st.session_state.collection_info = None
     if 'report' not in st.session_state:
         st.session_state.report = None
+    if 'subsector' not in st.session_state:
+        st.session_state.subsector = None
 
 def main():
     """Main application function."""
@@ -38,7 +41,7 @@ def main():
         init_session_state()
 
         # Application title
-        st.title("Inspect Geospatial Data for ESG")
+        st.title("Inspect Geospatial Data for ESG-")
         
         # Render sidebar and get inputs
         sidebar_inputs = render_sidebar()
@@ -70,6 +73,7 @@ def process_search(sidebar_inputs):
         st.session_state.search_performed = True
         st.session_state.location_name = sidebar_inputs["location"]
         st.session_state.bbox = bbox_filter
+        st.session_state.subsector = sidebar_inputs["subsector"]
         
         # Search STAC collections
         with st.spinner("Searching for relevant data collections..."):
@@ -86,18 +90,18 @@ def process_search(sidebar_inputs):
         st.session_state.collection = matching_collections
         st.session_state.collection_info = collection_info
         
-        # Generate insights
-        if matching_collections:
-            with st.spinner("Generating ESG insights..."):
-                prompt = generate_search_prompt(
-                    location=sidebar_inputs["location"],
-                    sector=sidebar_inputs["sector"],
-                    subsector=sidebar_inputs["subsector"],
-                    collections=matching_collections
-                )
-                st.session_state.report = generate_text(prompt)
-        else:
-            st.warning("No matching data collections found for the specified criteria.")
+        # # Generate insights
+        # if matching_collections:
+        #     with st.spinner("Generating ESG insights..."):
+        #         prompt = generate_search_prompt(
+        #             location=sidebar_inputs["location"],
+        #             sector=sidebar_inputs["sector"],
+        #             subsector=sidebar_inputs["subsector"],
+        #             collections=matching_collections
+        #         )
+        #         st.session_state.report = generate_text(prompt)
+        # else:
+        #     st.warning("No matching data collections found for the specified criteria.")
             
     except Exception as e:
         logger.error(f"Search processing error: {str(e)}")
@@ -122,7 +126,27 @@ def display_results():
     try:
         # Show search area
         st.info(f"📍 Analyzing area: {st.session_state.location_name}")
+        subsector_info = extract_subsector_info('./src/data/SASB standard.xlsx', st.session_state.subsector)
         
+        # Display subsector information with side-by-side layout
+        topics = subsector_info['Topic'].unique()
+               
+        # Create two columns for topics and metrics
+        # Ensure tab labels are properly formatted
+        tab_labels = [topic.strip() for topic in topics]
+        tabs = st.tabs(tab_labels)
+        
+        for i, tab in enumerate(tabs):
+            with tab:
+                selected_topic = topics[i]
+
+                # Filter metrics for the selected topic
+                metrics = subsector_info[subsector_info['Topic'] == selected_topic]['Accounting Metric']
+                
+                with st.expander("View Metrics", expanded=True):
+                    metrics_text = "\n".join([f"- {metric}" for metric in metrics])
+                    st.markdown(metrics_text)
+
         # Create two columns for map and insights
         col1, col2 = st.columns([3, 2])
         
