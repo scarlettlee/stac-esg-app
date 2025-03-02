@@ -41,7 +41,7 @@ def main():
         init_session_state()
 
         # Application title
-        st.title("Inspect Geospatial Data for ESG-")
+        st.title("Inspect Geospatial Data for ESG")
         
         # Render sidebar and get inputs
         sidebar_inputs = render_sidebar()
@@ -90,18 +90,18 @@ def process_search(sidebar_inputs):
         st.session_state.collection = matching_collections
         st.session_state.collection_info = collection_info
         
-        # # Generate insights
-        # if matching_collections:
-        #     with st.spinner("Generating ESG insights..."):
-        #         prompt = generate_search_prompt(
-        #             location=sidebar_inputs["location"],
-        #             sector=sidebar_inputs["sector"],
-        #             subsector=sidebar_inputs["subsector"],
-        #             collections=matching_collections
-        #         )
-        #         st.session_state.report = generate_text(prompt)
-        # else:
-        #     st.warning("No matching data collections found for the specified criteria.")
+        # Generate insights
+        if matching_collections:
+            with st.spinner("Generating ESG insights..."):
+                prompt = generate_search_prompt(
+                    location=sidebar_inputs["location"],
+                    sector=sidebar_inputs["sector"],
+                    subsector=sidebar_inputs["subsector"],
+                    collections=matching_collections
+                )
+                st.session_state.report = generate_text(prompt)
+        else:
+            st.warning("No matching data collections found for the specified criteria.")
             
     except Exception as e:
         logger.error(f"Search processing error: {str(e)}")

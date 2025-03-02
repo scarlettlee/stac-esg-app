@@ -253,12 +253,14 @@ def access_and_visualize_data(collection_id, bbox, temporal_filter, location_nam
     
     # Search for items
     items = search_stac_items(client, collection_id, bbox, temporal_filter)
+    st.write("items:",items)
     
     if not items:
         return None, None, f"No items found for collection {collection_id} in the specified area and time range."
     
     # Get the first item for demonstration
     item = items[0]
+    st.write("item0:",item)
     
     # Display item information
     item_info = {
@@ -312,7 +314,9 @@ st.sidebar.header("Filters")
 
 # Replace the bbox_filter input with address input
 location = st.sidebar.text_input("Location (e.g., 'New York City' or 'Tokyo, Japan')", "New York City")
+# set temporal_filter a global variable
 temporal_filter = st.sidebar.text_input("Date Range (comma-separated)", "2020-01-01, 2025-12-31")
+# st.write(temporal_filter.split(", "),"/".join(temporal_filter),"/".join(temporal_filter.split(", ")))
 
 if st.sidebar.button("Search and Generate Data insights"):
     # Get bounding box from location
@@ -327,8 +331,8 @@ if st.sidebar.button("Search and Generate Data insights"):
         st.session_state.bbox = bbox_filter
         
         # Parse temporal filter
-        temporal_filter = temporal_filter.split(", ")    
-
+        temporal_filter = temporal_filter.split(", ")
+        
         # Connect to the STAC API
         stac_url = "https://planetarycomputer.microsoft.com/api/stac/v1"
         client_st = Client.open(stac_url)
@@ -361,9 +365,9 @@ if st.sidebar.button("Search and Generate Data insights"):
         # Store collection info in session state
         st.session_state.collection_info = collection_info
 
-        # Generate summary
-        prompt = f"Summarize insights on how the following geospatial data could help with the ESG estimate of {location}:\n\n{matching_collections}"
-        st.session_state.report = generate_text(prompt)
+        # # Generate summary
+        # prompt = f"Summarize insights on how the following geospatial data could help with the ESG estimate of {location}:\n\n{matching_collections}"
+        # st.session_state.report = generate_text(prompt)
 
         # Reset the visualization data when performing a new search
         st.session_state.selected_collection = None
@@ -416,12 +420,25 @@ if st.session_state.search_performed:
             
             with st.spinner(f"Fetching and processing data from {selected_collection}..."):
                 # Call the function to access and visualize data
+                # Split the string on comma and remove any extra spaces
+                st.write("Type:", type(temporal_filter))
+                st.write("Content:", temporal_filter)
+                start_date = temporal_filter[0]
+                end_date = temporal_filter[1]
+                date_range = f"{start_date}/{end_date}"
+                st.write(date_range)
+
+                dates = [date.strip() for date in temporal_filter.split(",")]
+                # Now join with a "/"
+                date_range = "/".join(dates)
+                st.write(date_range)
                 visualization, item_info, analysis = access_and_visualize_data(
                     selected_collection, 
                     st.session_state.bbox, 
-                    ", ".join(temporal_filter), 
+                    date_range, 
                     st.session_state.location_name
                 )
+                st.write(visualization, item_info, analysis, date_range)
                 
                 # Store results in session state
                 st.session_state.visualization_data = visualization
