@@ -128,6 +128,11 @@ def display_results():
         st.info(f"📍 Analyzing area: {st.session_state.location_name}")
         subsector_info = extract_subsector_info('./src/data/SASB standard.xlsx', st.session_state.subsector)
         
+        # add a second level title for the subsector
+        st.subheader(f"Step 1: Company ESG Risk Profile")        
+        # Display subsector information
+        st.write("Below are the key material risks impacting your company's financial performance, identified through an environmental, social, and governance (ESG) lens.")
+
         # Display subsector information with side-by-side layout
         topics = subsector_info['Topic'].unique()
                
@@ -147,46 +152,48 @@ def display_results():
                     metrics_text = "\n".join([f"- {metric}" for metric in metrics])
                     st.markdown(metrics_text)
 
+        # Create two columns for map and dataset
+        st.subheader("Step 2: Geospatial Data")
         # Create two columns for map and insights
         col1, col2 = st.columns([3, 2])
         
         with col1:
-            st.subheader("Geographic Area")
+            
             map = display_area_map(st.session_state.bbox)
             st_folium(map, width=None, height=600)
             
         with col2:
-            if st.session_state.report:
-                st.subheader("ESG Insights")
-                st.markdown(st.session_state.report)
+            # Display collection information
+            if st.session_state.collection_info:
+                # st.subheader("Available Data Collections")
                 
-        # Display collection information
-        if st.session_state.collection_info:
-            st.subheader("Available Data Collections")
-            
-            # Create tabs for different views
-            tab1, tab2 = st.tabs(["Summary", "Detailed View"])
-            
-            with tab1:
-                # Display summary metrics
-                metrics_cols = st.columns(3)
-                with metrics_cols[0]:
-                    st.metric("Total Collections", len(st.session_state.collection_info))
-                with metrics_cols[1]:
-                    temporal_range = calculate_temporal_range()
-                    st.metric("Time Range", temporal_range)
-                with metrics_cols[2]:
-                    st.metric("Area Coverage", f"{calculate_area_coverage():.2f} km²")
-                    
-            with tab2:
-                # Display detailed collection information
-                for idx, collection in enumerate(st.session_state.collection_info):
-                    with st.expander(f"{collection['title']} ({collection['id']})"):
-                        st.markdown(f"**Description:** {collection['description']}")
-                        st.markdown(f"**License:** {collection['license']}")
-                        if collection['keywords']:
-                            st.markdown(f"**Keywords:** {', '.join(collection['keywords'])}")
+                # Create tabs for different views
+                tab1, tab2 = st.tabs(["Summary", "Detailed View"])
+                
+                with tab1:
+                    # Display summary metrics
+                    metrics_cols = st.columns(3)
+                    with metrics_cols[0]:
+                        st.metric("Total Collections", len(st.session_state.collection_info))
+                    with metrics_cols[1]:
+                        temporal_range = calculate_temporal_range()
+                        st.metric("Time Range", temporal_range)
+                    with metrics_cols[2]:
+                        st.metric("Area Coverage", f"{calculate_area_coverage():.2f} km²")
                         
+                with tab2:
+                    # Display detailed collection information
+                    for idx, collection in enumerate(st.session_state.collection_info):
+                        with st.expander(f"{collection['title']} ({collection['id']})"):
+                            st.markdown(f"**Description:** {collection['description']}")
+                            st.markdown(f"**License:** {collection['license']}")
+                            if collection['keywords']:
+                                st.markdown(f"**Keywords:** {', '.join(collection['keywords'])}")
+
+        if st.session_state.report:
+            st.subheader("Step 3: ESG Insights")
+            st.markdown(st.session_state.report)        
+
     except Exception as e:
         logger.error(f"Display error: {str(e)}")
         st.error("Error displaying results. Please try refreshing the page.")
