@@ -31,6 +31,8 @@ def init_session_state():
         st.session_state.collection_info = None
     if 'report' not in st.session_state:
         st.session_state.report = None
+    if 'sector' not in st.session_state:
+        st.session_state.sector = None
     if 'subsector' not in st.session_state:
         st.session_state.subsector = None
 
@@ -73,6 +75,7 @@ def process_search(sidebar_inputs):
         st.session_state.search_performed = True
         st.session_state.location_name = sidebar_inputs["location"]
         st.session_state.bbox = bbox_filter
+        st.session_state.sector = sidebar_inputs["sector"]
         st.session_state.subsector = sidebar_inputs["subsector"]
         
         # Search STAC collections
@@ -88,20 +91,7 @@ def process_search(sidebar_inputs):
             )
             
         st.session_state.collection = matching_collections
-        st.session_state.collection_info = collection_info
-        
-        # Generate insights
-        if matching_collections:
-            with st.spinner("Generating ESG insights..."):
-                prompt = generate_search_prompt(
-                    location=sidebar_inputs["location"],
-                    sector=sidebar_inputs["sector"],
-                    subsector=sidebar_inputs["subsector"],
-                    collections=matching_collections
-                )
-                st.session_state.report = generate_text(prompt)
-        else:
-            st.warning("No matching data collections found for the specified criteria.")
+        st.session_state.collection_info = collection_info   
             
     except Exception as e:
         logger.error(f"Search processing error: {str(e)}")
@@ -157,8 +147,7 @@ def display_results():
         # Create two columns for map and insights
         col1, col2 = st.columns([3, 2])
         
-        with col1:
-            
+        with col1:            
             map = display_area_map(st.session_state.bbox)
             st_folium(map, width=None, height=600)
             
@@ -190,8 +179,21 @@ def display_results():
                             if collection['keywords']:
                                 st.markdown(f"**Keywords:** {', '.join(collection['keywords'])}")
 
+        st.subheader("Step 3: ESG Insights")
+        # Generate insights
+        if st.session_state.collection:
+            with st.spinner("Generating ESG insights..."):
+                prompt = generate_search_prompt(
+                    location=st.session_state.location_name,
+                    sector=st.session_state.sector,
+                    subsector=st.session_state.subsector,
+                    collections=st.session_state.collection
+                )
+                st.session_state.report = generate_text(prompt)
+        else:
+            st.warning("No matching data collections found for the specified criteria.")
+
         if st.session_state.report:
-            st.subheader("Step 3: ESG Insights")
             st.markdown(st.session_state.report)        
 
     except Exception as e:
