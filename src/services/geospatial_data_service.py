@@ -118,6 +118,13 @@ def load_and_display_data(item, url, data_type="raster"):
                     "std": np.nanstd(image, axis=(1,2))
                 }
                 
+                # Display the image using IPython.display.Image
+                if "rendered_preview" in item.assets:
+                    preview_url = item.assets["rendered_preview"].href
+                    st.image(preview_url, width=500)
+                else:
+                    st.write("Rendered preview not available.")
+
                 return image, metadata, stats
                 
         except Exception as e:

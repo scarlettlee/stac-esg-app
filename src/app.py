@@ -183,32 +183,40 @@ def display_results():
                                 st.markdown(f"**Keywords:** {', '.join(collection['keywords'])}")
 
         st.subheader("Step 3: ESG Insights")
-        # # Generate insights
-        # if st.session_state.collection:
-        #     with st.spinner("Generating ESG insights..."):
-        #         prompt = generate_search_prompt(
-        #             location=st.session_state.location_name,
-        #             sector=st.session_state.sector,
-        #             subsector=st.session_state.subsector,
-        #             collections=st.session_state.collection
-        #         )
-        #         st.session_state.report = generate_text(prompt)
-        # else:
-        #     st.warning("No matching data collections found for the specified criteria.")
+        # Generate insights
+        if st.session_state.collection:
+            with st.spinner("Generating ESG insights..."):
+                prompt = generate_search_prompt(
+                    location=st.session_state.location_name,
+                    sector=st.session_state.sector,
+                    subsector=st.session_state.subsector,
+                    collections=st.session_state.collection
+                )
+                st.session_state.report = generate_text(prompt)
+        else:
+            st.warning("No matching data collections found for the specified criteria.")
 
-        # if st.session_state.report:
-        #     st.markdown(st.session_state.report)        
+        if st.session_state.report:
+            st.markdown(st.session_state.report)        
 
         # Add a section for data visualization and statistics
         st.subheader("Step 4: Data Visualization and Analysis")
         
         # Let user select a collection to explore
         if st.session_state.collection:
-            collection_ids = ['landsat-c2-l2']#[c.id for c in st.session_state.collection]
+            collection_ids = [c.id for c in st.session_state.collection]   
+            # Check if 'landsat-c2-l2' is in the list to set it as default
+            if 'landsat-c2-l2' in collection_ids:
+                default_index = collection_ids.index('landsat-c2-l2')
+            else:
+                default_index = 0  # Use the first item as default if not found
+
+            # Create a selectbox with a default selection
             selected_collection = st.selectbox(
-                "Select a data collection to visualize:", 
-                collection_ids
-            )
+                "Select a data collection to visualize:",
+                collection_ids,
+                index=default_index
+            )      
             
             # Determine data type (raster or vector)
             data_type = "raster"  # Default, you could add logic to determine this from collection metadata
@@ -219,9 +227,9 @@ def display_results():
                     item, url_or_message = fetch_geospatial_data(
                         selected_collection, 
                         st.session_state.bbox,
-                        "2022-12-15/2022-12-31"  # Example time range, you may want to use user input
+                        "2024-08-27/2024-08-28"  # Example time range, you may want to use user input
                     )
-                    st.write(f"Data source: {item},{url_or_message}")
+                    # st.write(f"Data source: {item},{url_or_message}")
                     
                     if item:
                         # Create columns for visualization and statistics
