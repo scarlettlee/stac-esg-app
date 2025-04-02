@@ -10,3 +10,7 @@ streamlit-folium
 plotly
 pandas
 openpyxl
+rasterio
+geopandas
+planetary-computer
+matplotlib

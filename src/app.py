@@ -6,8 +6,11 @@ from components.maps import display_area_map
 from services.geocoding import get_bounding_box
 from services.stac_service import search_stac_collections
 from services.openai_service import generate_text
+from services.geospatial_data_service import fetch_geospatial_data, load_and_display_data
 from utils.extract_subsector_info import extract_subsector_info
 from streamlit_folium import st_folium
+import matplotlib.pyplot as plt
+from rasterio.plot import show
 import logging
 
 # Configure logging
@@ -180,25 +183,89 @@ def display_results():
                                 st.markdown(f"**Keywords:** {', '.join(collection['keywords'])}")
 
         st.subheader("Step 3: ESG Insights")
-        # Generate insights
-        if st.session_state.collection:
-            with st.spinner("Generating ESG insights..."):
-                prompt = generate_search_prompt(
-                    location=st.session_state.location_name,
-                    sector=st.session_state.sector,
-                    subsector=st.session_state.subsector,
-                    collections=st.session_state.collection
-                )
-                st.session_state.report = generate_text(prompt)
-        else:
-            st.warning("No matching data collections found for the specified criteria.")
+        # # Generate insights
+        # if st.session_state.collection:
+        #     with st.spinner("Generating ESG insights..."):
+        #         prompt = generate_search_prompt(
+        #             location=st.session_state.location_name,
+        #             sector=st.session_state.sector,
+        #             subsector=st.session_state.subsector,
+        #             collections=st.session_state.collection
+        #         )
+        #         st.session_state.report = generate_text(prompt)
+        # else:
+        #     st.warning("No matching data collections found for the specified criteria.")
 
-        if st.session_state.report:
-            st.markdown(st.session_state.report)        
+        # if st.session_state.report:
+        #     st.markdown(st.session_state.report)        
+
+        # Add a section for data visualization and statistics
+        st.subheader("Step 4: Data Visualization and Analysis")
+        
+        # Let user select a collection to explore
+        if st.session_state.collection:
+            collection_ids = ['landsat-c2-l2']#[c.id for c in st.session_state.collection]
+            selected_collection = st.selectbox(
+                "Select a data collection to visualize:", 
+                collection_ids
+            )
+            
+            # Determine data type (raster or vector)
+            data_type = "raster"  # Default, you could add logic to determine this from collection metadata
+            
+            # Fetch the data
+            with st.spinner("Fetching geospatial data..."):
+                try:
+                    item, url_or_message = fetch_geospatial_data(
+                        selected_collection, 
+                        st.session_state.bbox,
+                        "2022-12-15/2022-12-31"  # Example time range, you may want to use user input
+                    )
+                    st.write(f"Data source: {item},{url_or_message}")
+                    
+                    if item:
+                        # Create columns for visualization and statistics
+                        viz_col, stats_col = st.columns([3, 1])
+                        
+                        with viz_col:
+                            st.subheader("Data Visualization")
+                            
+                            # Load and process the data
+                            data, metadata, stats = load_and_display_data(item, url_or_message, data_type)
+                            
+                            if data is not None:
+                                # Display the data
+                                if data_type == "raster":
+                                    # Normalize for display if needed
+                                    fig, ax = plt.subplots(figsize=(10, 10))
+                                    show(data, ax=ax)
+                                    st.pyplot(fig)
+                                else:  # Vector
+                                    st.write("Vector data loaded:")
+                                    st.write(data.head())
+                                    # Plot the vector data
+                                    fig, ax = plt.subplots(figsize=(10, 10))
+                                    data.plot(ax=ax)
+                                    st.pyplot(fig)
+                            else:
+                                st.error(f"Failed to load data: {stats}")
+                        
+                        with stats_col:
+                            st.subheader("Statistics")
+                            if isinstance(stats, dict):
+                                st.write("Basic Statistics:")
+                                st.json(stats)
+                            else:
+                                st.error(stats)
+                    else:
+                        st.error(f"Could not fetch data: {url_or_message}")
+                except Exception as e:
+                    st.error("An error occurred while fetching geospatial data. Please try again: {str(e)}")
+        else:
+            st.warning("No collections available to visualize.")
 
     except Exception as e:
-        logger.error(f"Display error: {str(e)}")
-        st.error("Error displaying results. Please try refreshing the page.")
+        st.error("Error displaying results. Please try refreshing the page: {str(e)}")
 
 def calculate_temporal_range():
     """Calculate the temporal range of available data."""
