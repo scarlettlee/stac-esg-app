@@ -241,22 +241,22 @@ def display_results():
                             # Load and process the data
                             data, metadata, stats = load_and_display_data(item, url_or_message, data_type)
                             
-                            if data is not None:
-                                # Display the data
-                                if data_type == "raster":
-                                    # Normalize for display if needed
-                                    fig, ax = plt.subplots(figsize=(10, 10))
-                                    show(data, ax=ax)
-                                    st.pyplot(fig)
-                                else:  # Vector
-                                    st.write("Vector data loaded:")
-                                    st.write(data.head())
-                                    # Plot the vector data
-                                    fig, ax = plt.subplots(figsize=(10, 10))
-                                    data.plot(ax=ax)
-                                    st.pyplot(fig)
-                            else:
-                                st.error(f"Failed to load data: {stats}")
+                            # if data is not None:
+                            #     # Display the data
+                            #     if data_type == "raster":
+                            #         # Normalize for display if needed
+                            #         fig, ax = plt.subplots(figsize=(10, 10))
+                            #         show(data, ax=ax)
+                            #         st.pyplot(fig)
+                            #     else:  # Vector
+                            #         st.write("Vector data loaded:")
+                            #         st.write(data.head())
+                            #         # Plot the vector data
+                            #         fig, ax = plt.subplots(figsize=(10, 10))
+                            #         data.plot(ax=ax)
+                            #         st.pyplot(fig)
+                            # else:
+                            #     st.error(f"Failed to load data: {stats}")
                         
                         with stats_col:
                             st.subheader("Statistics")
