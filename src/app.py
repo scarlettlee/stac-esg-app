@@ -199,78 +199,78 @@ def display_results():
         if st.session_state.report:
             st.markdown(st.session_state.report)        
 
-        # Add a section for data visualization and statistics
-        st.subheader("Step 4: Data Visualization and Analysis")
+        # # Add a section for data visualization and statistics
+        # st.subheader("Step 4: Data Visualization and Analysis")
         
-        # Let user select a collection to explore
-        if st.session_state.collection:
-            collection_ids = [c.id for c in st.session_state.collection]   
-            # Check if 'landsat-c2-l2' is in the list to set it as default
-            if 'landsat-c2-l2' in collection_ids:
-                default_index = collection_ids.index('landsat-c2-l2')
-            else:
-                default_index = 0  # Use the first item as default if not found
+        # # Let user select a collection to explore
+        # if st.session_state.collection:
+        #     collection_ids = [c.id for c in st.session_state.collection]   
+        #     # Check if 'landsat-c2-l2' is in the list to set it as default
+        #     if 'landsat-c2-l2' in collection_ids:
+        #         default_index = collection_ids.index('landsat-c2-l2')
+        #     else:
+        #         default_index = 0  # Use the first item as default if not found
 
-            # Create a selectbox with a default selection
-            selected_collection = st.selectbox(
-                "Select a data collection to visualize:",
-                collection_ids,
-                index=default_index
-            )      
+        #     # Create a selectbox with a default selection
+        #     selected_collection = st.selectbox(
+        #         "Select a data collection to visualize:",
+        #         collection_ids,
+        #         index=default_index
+        #     )      
             
-            # Determine data type (raster or vector)
-            data_type = "raster"  # Default, you could add logic to determine this from collection metadata
+        #     # Determine data type (raster or vector)
+        #     data_type = "raster"  # Default, you could add logic to determine this from collection metadata
             
-            # Fetch the data
-            with st.spinner("Fetching geospatial data..."):
-                try:
-                    item, url_or_message = fetch_geospatial_data(
-                        selected_collection, 
-                        st.session_state.bbox,
-                        "2024-08-27/2024-08-28"  # Example time range, you may want to use user input
-                    )
-                    # st.write(f"Data source: {item},{url_or_message}")
+        #     # Fetch the data
+        #     with st.spinner("Fetching geospatial data..."):
+        #         try:
+        #             item, url_or_message = fetch_geospatial_data(
+        #                 selected_collection, 
+        #                 st.session_state.bbox,
+        #                 "2024-08-27/2024-08-28"  # Example time range, you may want to use user input
+        #             )
+        #             # st.write(f"Data source: {item},{url_or_message}")
                     
-                    if item:
-                        # Create columns for visualization and statistics
-                        viz_col, stats_col = st.columns([3, 1])
+        #             if item:
+        #                 # Create columns for visualization and statistics
+        #                 viz_col, stats_col = st.columns([3, 1])
                         
-                        with viz_col:
-                            st.subheader("Data Visualization")
+        #                 with viz_col:
+        #                     st.subheader("Data Visualization")
                             
-                            # Load and process the data
-                            data, metadata, stats = load_and_display_data(item, url_or_message, data_type)
+        #                     # Load and process the data
+        #                     data, metadata, stats = load_and_display_data(item, url_or_message, data_type)
                             
-                            # if data is not None:
-                            #     # Display the data
-                            #     if data_type == "raster":
-                            #         # Normalize for display if needed
-                            #         fig, ax = plt.subplots(figsize=(10, 10))
-                            #         show(data, ax=ax)
-                            #         st.pyplot(fig)
-                            #     else:  # Vector
-                            #         st.write("Vector data loaded:")
-                            #         st.write(data.head())
-                            #         # Plot the vector data
-                            #         fig, ax = plt.subplots(figsize=(10, 10))
-                            #         data.plot(ax=ax)
-                            #         st.pyplot(fig)
-                            # else:
-                            #     st.error(f"Failed to load data: {stats}")
+        #                     # if data is not None:
+        #                     #     # Display the data
+        #                     #     if data_type == "raster":
+        #                     #         # Normalize for display if needed
+        #                     #         fig, ax = plt.subplots(figsize=(10, 10))
+        #                     #         show(data, ax=ax)
+        #                     #         st.pyplot(fig)
+        #                     #     else:  # Vector
+        #                     #         st.write("Vector data loaded:")
+        #                     #         st.write(data.head())
+        #                     #         # Plot the vector data
+        #                     #         fig, ax = plt.subplots(figsize=(10, 10))
+        #                     #         data.plot(ax=ax)
+        #                     #         st.pyplot(fig)
+        #                     # else:
+        #                     #     st.error(f"Failed to load data: {stats}")
                         
-                        with stats_col:
-                            st.subheader("Statistics")
-                            if isinstance(stats, dict):
-                                st.write("Basic Statistics:")
-                                st.json(stats)
-                            else:
-                                st.error(stats)
-                    else:
-                        st.error(f"Could not fetch data: {url_or_message}")
-                except Exception as e:
-                    st.error("An error occurred while fetching geospatial data. Please try again: {str(e)}")
-        else:
-            st.warning("No collections available to visualize.")
+        #                 with stats_col:
+        #                     st.subheader("Statistics")
+        #                     if isinstance(stats, dict):
+        #                         st.write("Basic Statistics:")
+        #                         st.json(stats)
+        #                     else:
+        #                         st.error(stats)
+        #             else:
+        #                 st.error(f"Could not fetch data: {url_or_message}")
+        #         except Exception as e:
+        #             st.error("An error occurred while fetching geospatial data. Please try again: {str(e)}")
+        # else:
+        #     st.warning("No collections available to visualize.")
 
     except Exception as e:
         st.error("Error displaying results. Please try refreshing the page: {str(e)}")
