@@ -64,6 +64,7 @@ This MVP addresses the growing need for **data-driven ESG assessment** by combin
 - **STAC Service** - Microsoft Planetary Computer STAC API integration
 - **Geocoding Service** - Nominatim for location-to-coordinates conversion
 - **Gemini Service** - Google Gemini 1.5 Flash for ESG insights generation
+- **OpenAI Service** - GPT-3.5-turbo for ESG insights generation
 - **Geospatial Data Service** - Raster/vector data processing
 
 ### Data Sources

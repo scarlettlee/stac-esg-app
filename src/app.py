@@ -6,6 +6,7 @@ from components.maps import display_area_map
 from services.geocoding import get_bounding_box
 from services.stac_service import search_stac_collections
 from services.gemini_service import generate_esg_insights
+from services.openai_service import generate_text
 from services.geospatial_data_service import fetch_geospatial_data, load_and_display_data
 from utils.extract_subsector_info import extract_subsector_info
 from streamlit_folium import st_folium
@@ -98,7 +99,19 @@ def process_search(sidebar_inputs):
         logger.error(f"Search processing error: {str(e)}")
         st.error("Error processing search. Please try again with different parameters.")
 
+def generate_search_prompt(location, sector, subsector, collections):
+    """Generate prompt for OpenAI based on search context."""
+    return f"""Analyze how the following geospatial data collections could help with ESG assessment for a {subsector} company in the {sector} sector located in {location}.
 
+Focus on:
+1. Environmental impact assessment
+2. Social responsibility metrics
+3. Governance implications
+4. Specific ESG risks and opportunities
+5. Data-driven insights and recommendations
+
+Available data collections:
+{[collection.id for collection in collections]}"""
 
 def display_results():
     """Display search results and insights."""
@@ -172,12 +185,13 @@ def display_results():
         # Generate insights
         if st.session_state.collection:
             with st.spinner("Generating ESG insights..."):
-                st.session_state.report = generate_esg_insights(
+                prompt = generate_search_prompt(
                     location=st.session_state.location_name,
                     sector=st.session_state.sector,
                     subsector=st.session_state.subsector,
                     collections=st.session_state.collection
                 )
+                st.session_state.report = generate_text(prompt)
         else:
             st.warning("No matching data collections found for the specified criteria.")
 
