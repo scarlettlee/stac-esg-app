@@ -3,7 +3,6 @@
 import streamlit as st
 from typing import Tuple, Dict, List
 from config.sasb_sectors import SASB_SECTORS
-from utils.date_utils import validate_date_range
 
 def render_sector_selection() -> Tuple[str, str]:
     """
@@ -20,9 +19,20 @@ def render_sector_selection() -> Tuple[str, str]:
         key="sector_select"
     )
     
+    # Set default subsector based on selected sector
+    default_subsector = "E-Commerce" if selected_sector == "Consumer Goods" else SASB_SECTORS[selected_sector][0]
+    
+    # Find the index of the default subsector
+    subsector_options = SASB_SECTORS[selected_sector]
+    try:
+        default_index = subsector_options.index(default_subsector)
+    except ValueError:
+        default_index = 0  # Fallback to first option if not found
+    
     selected_subsector = st.sidebar.selectbox(
         "Select Industry Subsector",
-        options=SASB_SECTORS[selected_sector],
+        options=subsector_options,
+        index=default_index,
         key="subsector_select"
     )
     
@@ -48,61 +58,9 @@ def render_location_input(default_location: str = "New York City") -> str:
     
     return location
 
-def render_date_range(
-    default_range: str = "2020-01-01, 2025-12-31"
-) -> Tuple[bool, str, List[str]]:
-    """
-    Render date range input widget with validation.
-    
-    Args:
-        default_range: Default date range to display
-        
-    Returns:
-        Tuple[bool, str, List[str]]: (is_valid, error_message, [start_date, end_date])
-    """
-    st.sidebar.header("Time Period")
-    
-    date_range = st.sidebar.text_input(
-        "Date Range",
-        value=default_range,
-        help="Enter date range in format: YYYY-MM-DD, YYYY-MM-DD"
-    )
-    
-    is_valid, error_message = validate_date_range(date_range)
-    if not is_valid:
-        st.sidebar.error(error_message)
-        return False, error_message, []
-    
-    dates = [d.strip() for d in date_range.split(',')]
-    return True, "", dates
 
-def render_advanced_filters() -> Dict[str, any]:
-    """
-    Render advanced filtering options.
-    
-    Returns:
-        Dict[str, any]: Dictionary of filter settings
-    """
-    with st.sidebar.expander("Advanced Filters"):
-        filters = {
-            "min_cloud_cover": st.slider(
-                "Maximum Cloud Cover (%)",
-                0, 100, 20,
-                help="Filter scenes by maximum cloud cover percentage"
-            ),
-            "include_derived_data": st.checkbox(
-                "Include Derived Data",
-                True,
-                help="Include processed and derived data products"
-            ),
-            "data_frequency": st.selectbox(
-                "Data Frequency",
-                options=["Any", "Daily", "Weekly", "Monthly", "Annual"],
-                help="Filter by data collection frequency"
-            )
-        }
-    
-    return filters
+
+
 
 def render_sidebar() -> Dict[str, any]:
     """
@@ -119,12 +77,6 @@ def render_sidebar() -> Dict[str, any]:
     # Get location
     location = render_location_input()
     
-    # Get date range
-    is_valid, error_message, dates = render_date_range()
-    
-    # Get advanced filters
-    advanced_filters = render_advanced_filters()
-    
     # Search button
     search_clicked = st.sidebar.button(
         "Search and Generate Insights",
@@ -136,9 +88,5 @@ def render_sidebar() -> Dict[str, any]:
         "sector": sector,
         "subsector": subsector,
         "location": location,
-        "dates_valid": is_valid,
-        "date_error": error_message,
-        "date_range": dates,
-        "advanced_filters": advanced_filters,
         "search_clicked": search_clicked
     }

@@ -83,10 +83,8 @@ def process_search(sidebar_inputs):
         
         # Search STAC collections
         with st.spinner("Searching for relevant data collections..."):
-            # Ensure temporal_filter is a string before splitting
-            date_range = sidebar_inputs["date_range"]
-            if isinstance(date_range, list):
-                date_range = ", ".join(date_range)
+            # Use a default date range since time period filtering was removed
+            date_range = "2020-01-01, 2025-12-31"
             
             matching_collections, collection_info = search_stac_collections(
                 bbox_filter=bbox_filter,
