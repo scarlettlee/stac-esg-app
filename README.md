@@ -111,26 +111,72 @@ streamlit/
 
 ## 🚀 Getting Started
 
+### 🎯 Quick Start for Students
+
+1. **Clone and Setup** (5 minutes)
+   ```bash
+   git clone <your-repo-url>
+   cd streamlit
+   copy env_template.txt .env  # Windows
+   # OR
+   cp env_template.txt .env    # macOS/Linux
+   ```
+
+2. **Get API Keys** (10 minutes)
+   - Ask your instructor for shared API keys, OR
+   - Sign up for free API credits at [OpenAI](https://platform.openai.com/) and [Anthropic](https://console.anthropic.com/)
+
+3. **Edit .env file** (2 minutes)
+   - Open `.env` in any text editor
+   - Replace `your_key` with actual API keys
+
+4. **Run the app** (3 minutes)
+   ```bash
+   pip install -r requirements.txt
+   streamlit run src/app.py
+   ```
+
 ### Prerequisites
 - **Python 3.9+** (recommended: 3.9 or 3.10)
 - **Docker** (for containerized deployment)
 - **Google Cloud Platform** account (for production deployment)
-- **Google API key** (for Gemini AI insights generation)
+- **API keys** for OpenAI and/or Anthropic (for AI insights generation)
 
 ### Environment Variables
-Create a `.env` file in the root directory:
+This project uses environment variables for configuration. Follow these steps to set up your environment:
 
-```bash
-# Google Gemini API Configuration
-GOOGLE_API_KEY=your_google_api_key_here
+1. **Copy the template file:**
+   ```bash
+   # On Windows
+   copy env_template.txt .env
+   
+   # On macOS/Linux
+   cp env_template.txt .env
+   ```
 
-# Streamlit Configuration
-STREAMLIT_SERVER_PORT=8080
-STREAMLIT_SERVER_ADDRESS=0.0.0.0
+2. **Edit the `.env` file** with your actual API keys and configuration:
+   ```bash
+   # Required: OpenAI API Configuration
+   OPENAI_API_KEY=your_openai_api_key_here
+   
+   # Required: Anthropic API Configuration  
+   ANTHROPIC_API_KEY=your_anthropic_api_key_here
+   
+   # Streamlit Configuration (optional - defaults are set)
+   STREAMLIT_SERVER_PORT=8080
+   STREAMLIT_SERVER_ADDRESS=0.0.0.0
+   STREAMLIT_SERVER_HEADLESS=true
+   STREAMLIT_THEME_BASE=light
+   STREAMLIT_SERVER_MAX_UPLOAD_SIZE=200
+   ```
 
-# Optional: Custom STAC API endpoint
-STAC_API_URL=https://planetarycomputer.microsoft.com/api/stac/v1
-```
+3. **Get your API keys:**
+   - **OpenAI API Key**: Sign up at [OpenAI Platform](https://platform.openai.com/) and create an API key
+   - **Anthropic API Key**: Sign up at [Anthropic Console](https://console.anthropic.com/) and create an API key
+
+4. **Important**: Never commit your `.env` file to version control! It's already in `.gitignore` to prevent accidental commits.
+
+**Note for Students**: If you don't have API keys yet, you can still run the application locally, but the AI insights generation features won't work. Ask your instructor or team lead for shared API keys for development purposes.
 
 ## 💻 Development Setup
 
@@ -265,6 +311,33 @@ STAC_API_URL=https://planetarycomputer.microsoft.com/api/stac/v1
 - **Key Files**: `Dockerfile`, `cloudbuild.yaml`, `deploy-script.sh`
 - **Skills**: Docker, GCP, CI/CD, monitoring
 
+### Environment Setup for Students
+
+1. **First-time Setup**
+   ```bash
+   # Clone the repository
+   git clone <your-repo-url>
+   cd streamlit
+   
+   # Copy environment template
+   copy env_template.txt .env  # Windows
+   # OR
+   cp env_template.txt .env    # macOS/Linux
+   
+   # Edit .env file with your API keys
+   # Use a text editor like VS Code, Notepad++, or nano
+   ```
+
+2. **API Key Management**
+   - **Individual Development**: Use your own API keys for personal development
+   - **Team Development**: Coordinate with your team lead for shared API keys
+   - **Class Projects**: Your instructor may provide shared API keys for the entire class
+
+3. **Environment File Security**
+   - The `.env` file is automatically ignored by Git
+   - Never share your API keys in chat, emails, or code reviews
+   - If you accidentally commit API keys, immediately rotate them
+
 ### Development Best Practices
 
 1. **Code Style**
@@ -356,6 +429,13 @@ STAC_API_URL=https://planetarycomputer.microsoft.com/api/stac/v1
 - Check Python version compatibility
 - Verify all dependencies are installed
 - Review Streamlit configuration
+
+#### **Environment Setup Issues**
+- Ensure `.env` file exists in the root directory
+- Verify API keys are correctly formatted (no extra spaces or quotes)
+- Check that `env_template.txt` was copied to `.env` (not just renamed)
+- Confirm API keys are valid and have sufficient credits
+- For Windows users: Use `copy` command, not `cp`
 
 ### Getting Help
 
