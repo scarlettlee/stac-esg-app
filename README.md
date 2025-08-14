@@ -63,7 +63,7 @@ This MVP addresses the growing need for **data-driven ESG assessment** by combin
 ### Backend Services
 - **STAC Service** - Microsoft Planetary Computer STAC API integration
 - **Geocoding Service** - Nominatim for location-to-coordinates conversion
-- **OpenAI Service** - GPT-3.5-turbo for ESG insights generation
+- **Gemini Service** - Google Gemini 1.5 Flash for ESG insights generation
 - **Geospatial Data Service** - Raster/vector data processing
 
 ### Data Sources
@@ -114,14 +114,14 @@ streamlit/
 - **Python 3.9+** (recommended: 3.9 or 3.10)
 - **Docker** (for containerized deployment)
 - **Google Cloud Platform** account (for production deployment)
-- **OpenAI API key** (for AI insights generation)
+- **Google API key** (for Gemini AI insights generation)
 
 ### Environment Variables
 Create a `.env` file in the root directory:
 
 ```bash
-# OpenAI API Configuration
-OPENAI_API_KEY=your_openai_api_key_here
+# Google Gemini API Configuration
+GOOGLE_API_KEY=your_google_api_key_here
 
 # Streamlit Configuration
 STREAMLIT_SERVER_PORT=8080
@@ -331,7 +331,7 @@ STAC_API_URL=https://planetarycomputer.microsoft.com/api/stac/v1
 
 ### Common Issues
 
-#### **OpenAI API Errors**
+#### **Google Gemini API Errors**
 - Verify your API key is correct
 - Check API usage limits and billing
 - Ensure the API key has proper permissions
