@@ -104,6 +104,15 @@ def process_search(sidebar_inputs):
         logger.error(f"Search processing error: {str(e)}")
         st.error("Error processing search. Please try again with different parameters.")
 
+def display_topic_metrics(selected_topic, subsector_info):
+    """Display metrics for a selected topic."""
+    # Filter metrics for the selected topic
+    metrics = subsector_info[subsector_info['Topic'] == selected_topic]['Accounting Metric']
+    
+    with st.expander("View Metrics", expanded=True):
+        metrics_text = "\n".join([f"- {metric}" for metric in metrics])
+        st.markdown(metrics_text)
+
 def generate_search_prompt(location, sector, subsector, collections):
     """Generate prompt for OpenAI based on search context."""
     return f"""Analyze how the following geospatial data collections could help with ESG assessment for a {subsector} company in the {sector} sector located in {location}.
@@ -133,21 +142,108 @@ def display_results():
         # Display subsector information with side-by-side layout
         topics = subsector_info['Topic'].unique()
                
-        # Create two columns for topics and metrics
-        # Ensure tab labels are properly formatted
+        # Create tabs with better spacing and visibility
         tab_labels = [topic.strip() for topic in topics]
-        tabs = st.tabs(tab_labels)
         
-        for i, tab in enumerate(tabs):
-            with tab:
-                selected_topic = topics[i]
-
-                # Filter metrics for the selected topic
-                metrics = subsector_info[subsector_info['Topic'] == selected_topic]['Accounting Metric']
+        # Use a more robust tab system to ensure all tabs are visible
+        if len(tab_labels) > 0:
+            # Add custom CSS to improve tab display and ensure all tabs are visible
+            st.markdown("""
+            <style>
+            .stTabs [data-baseweb="tab-list"] {
+                gap: 12px;
+                overflow-x: auto;
+                flex-wrap: wrap;
+                max-width: 100%;
+                padding: 8px 0;
+                border-bottom: 2px solid #e0e0e0;
+                background: #f8f9fa;
+                border-radius: 8px 8px 0 0;
+            }
+            .stTabs [data-baseweb="tab"] {
+                height: auto;
+                white-space: nowrap;
+                min-width: fit-content;
+                max-width: none;
+                flex-shrink: 0;
+                padding: 8px 16px;
+                margin: 0 2px;
+                border-radius: 6px 6px 0 0;
+                border: 1px solid #d0d0d0;
+                border-bottom: none;
+                background: #ffffff;
+                color: #666;
+                font-weight: 500;
+                transition: all 0.2s ease;
+            }
+            .stTabs [data-baseweb="tab"]:hover {
+                background: #f0f0f0;
+                color: #333;
+                transform: translateY(-1px);
+                box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+            }
+            .stTabs [data-baseweb="tab"][aria-selected="true"] {
+                background: #ffffff;
+                color: #1f77b4;
+                border-color: #1f77b4;
+                border-bottom: 2px solid #ffffff;
+                font-weight: 600;
+                box-shadow: 0 2px 8px rgba(31,119,180,0.15);
+            }
+            .stTabs [data-baseweb="tab-panel"] {
+                padding: 1.5rem;
+                background: #ffffff;
+                border: 1px solid #d0d0d0;
+                border-top: none;
+                border-radius: 0 0 8px 8px;
+                margin-top: -1px;
+            }
+            /* Ensure horizontal scrolling works properly */
+            .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar {
+                height: 8px;
+            }
+            .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 4px;
+            }
+            .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar-thumb {
+                background: #888;
+                border-radius: 4px;
+            }
+            .stTabs [data-baseweb="tab-list"]::-webkit-scrollbar-thumb:hover {
+                background: #555;
+            }
+            /* Add visual separator between tabs */
+            .stTabs [data-baseweb="tab"]:not(:last-child)::after {
+                content: '';
+                position: absolute;
+                right: -6px;
+                top: 50%;
+                transform: translateY(-50%);
+                width: 1px;
+                height: 60%;
+                background: #e0e0e0;
+            }
+            </style>
+            """, unsafe_allow_html=True)
+            
+            # Try to use tabs, but if there are too many, use a selectbox approach
+            if len(tab_labels) <= 6:  # Use tabs for 6 or fewer topics
+                tabs = st.tabs(tab_labels)
                 
-                with st.expander("View Metrics", expanded=True):
-                    metrics_text = "\n".join([f"- {metric}" for metric in metrics])
-                    st.markdown(metrics_text)
+                for i, tab in enumerate(tabs):
+                    with tab:
+                        selected_topic = topics[i]
+                        display_topic_metrics(selected_topic, subsector_info)
+            else:  # Use selectbox for many topics
+                st.info("📋 Many ESG topics found. Use the dropdown below to explore each topic.")
+                selected_topic = st.selectbox(
+                    "Select ESG Topic to View:",
+                    options=tab_labels,
+                    index=0,
+                    help="Choose a topic to view its associated metrics and risks"
+                )
+                display_topic_metrics(selected_topic, subsector_info)
 
         # Create two columns for map and dataset
         st.subheader("Step 2: Geospatial Data")

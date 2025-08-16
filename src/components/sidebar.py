@@ -13,14 +13,22 @@ def render_sector_selection() -> Tuple[str, str]:
     """
     st.sidebar.header("Industry Selection")
     
+    # Set default sector to "Technology & Communications"
+    default_sector = "Technology & Communications"
+    default_sector_index = list(SASB_SECTORS.keys()).index(default_sector)
+    
     selected_sector = st.sidebar.selectbox(
         "Select Industry Sector",
         options=list(SASB_SECTORS.keys()),
+        index=default_sector_index,
         key="sector_select"
     )
     
-    # Set default subsector based on selected sector
-    default_subsector = "E-Commerce" if selected_sector == "Consumer Goods" else SASB_SECTORS[selected_sector][0]
+    # Set default subsector to "Software & IT Services" for Technology & Communications
+    if selected_sector == "Technology & Communications":
+        default_subsector = "Software & IT Services"
+    else:
+        default_subsector = SASB_SECTORS[selected_sector][0]
     
     # Find the index of the default subsector
     subsector_options = SASB_SECTORS[selected_sector]
