@@ -124,7 +124,7 @@ streamlit/
 
 2. **Get API Keys** (10 minutes)
    - Ask your instructor for shared API keys, OR
-   - Sign up for free API credits at [OpenAI](https://platform.openai.com/) and [Anthropic](https://console.anthropic.com/)
+   - Sign up for free API credits at [OpenAI](https://platform.openai.com/) 
 
 3. **Edit .env file** (2 minutes)
    - Open `.env` in any text editor

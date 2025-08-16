@@ -1,6 +1,8 @@
 # src/app.py
 
 import streamlit as st
+import os
+from dotenv import load_dotenv
 from components.sidebar import render_sidebar
 from components.maps import display_area_map
 from services.geocoding import get_bounding_box
@@ -13,6 +15,9 @@ from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 from rasterio.plot import show
 import logging
+
+# Load environment variables from .env file
+load_dotenv()
 
 # Configure logging
 logging.basicConfig(level=logging.INFO)

@@ -5,7 +5,18 @@ from openai import OpenAI
 import os
 from typing import Union
 
-client = OpenAI(api_key=os.getenv('OPENAI_API_KEY'))
+# Initialize client lazily to avoid import-time environment variable issues
+_client = None
+
+def get_client():
+    """Get OpenAI client, creating it if it doesn't exist."""
+    global _client
+    if _client is None:
+        api_key = os.getenv('OPENAI_API_KEY')
+        if not api_key:
+            raise ValueError("OPENAI_API_KEY environment variable not set")
+        _client = OpenAI(api_key=api_key)
+    return _client
 
 def generate_text(prompt: str, sector: str = None, subsector: str = None) -> Union[str, None]:
     """Generate text using OpenAI with sector context."""
@@ -16,6 +27,7 @@ def generate_text(prompt: str, sector: str = None, subsector: str = None) -> Uni
         
         full_prompt = sector_context + prompt
         
+        client = get_client()
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
