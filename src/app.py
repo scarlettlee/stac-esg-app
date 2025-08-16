@@ -393,7 +393,7 @@ if __name__ == "__main__":
     # Page configuration
     st.set_page_config(
         page_title="ESG Geospatial Data Inspector",
-        page_icon="🌍",
+        page_icon="src/data/ESGreen.png",
         layout="wide"
     )
     main()
