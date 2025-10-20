@@ -52,7 +52,7 @@ def main():
         init_session_state()
 
         # Application title
-        st.title("Inspect Geospatial Data for ESG")
+        st.title("🌍 Inspect Geospatial Data for ESG")
         
         # Render sidebar and get inputs
         sidebar_inputs = render_sidebar()
@@ -396,4 +396,6 @@ if __name__ == "__main__":
         page_icon="src/data/ESGreen.png",
         layout="wide"
     )
+    
+    # Run the main application
     main()

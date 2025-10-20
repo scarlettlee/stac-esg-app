@@ -8,6 +8,7 @@ A comprehensive web application that combines **ESG (Environmental, Social, Gove
 - [Features](#features)
 - [Technology Stack](#technology-stack)
 - [Project Structure](#project-structure)
+- [Model Context Protocol (MCP) Architecture](#model-context-protocol-mcp-architecture)
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Deployment](#deployment)
@@ -42,6 +43,7 @@ This MVP addresses the growing need for **data-driven ESG assessment** by combin
 - **Temporal Filtering**: Date range validation and filtering
 - **STAC Collection Search**: Spatial and temporal intersection analysis
 - **Data Collection Metadata**: Comprehensive dataset information
+
 
 ### 🎨 Interactive Mapping
 - **Area Visualization**: Bounding box display with search area highlighting
@@ -108,6 +110,56 @@ streamlit/
 ├── deploy-script.sh            # Deployment automation script
 └── README.md                   # This file
 ```
+
+## 🧩 Model Context Protocol (MCP) Architecture
+
+The application uses the **Model Context Protocol (MCP)** framework to connect satellite data analysis with AI-powered ESG insights.
+
+### Architecture Flow
+
+```
+┌─────────────┐
+│   User      │
+└──────┬──────┘
+       │
+       ↓
+┌─────────────────┐
+│  Streamlit App  │
+└─────┬───────────┘
+      │
+      ↓
+┌───────────────────┐
+│  MCP Framework    │
+│  ┌──────────────┐ │
+│  │ STAC Provider│ │ → Fetch satellite data
+│  └──────┬───────┘ │
+│         ↓         │
+│  ┌──────────────┐ │
+│  │ ESG Provider │ │ → Analyze data (NDVI, etc.)
+│  └──────┬───────┘ │
+└─────────┼─────────┘
+          │ Real analysis results
+          ↓
+    ┌────────────┐
+    │ LLM (GPT)  │ → Generate insights from ACTUAL data
+    └────────────┘
+```
+
+### How It Works
+
+1. **User Input**: Location, sector, and subsector selection
+2. **Data Retrieval**: STAC Provider fetches satellite imagery from Microsoft Planetary Computer
+3. **ESG Analysis**: ESG Provider processes satellite data to calculate environmental metrics
+4. **AI Insights**: LLM receives real analysis results and generates actionable ESG recommendations
+
+### MCP Components
+
+- **`src/mcp/base_provider.py`**: Abstract interface for all providers
+- **`src/mcp/stac_image_provider.py`**: Satellite imagery retrieval (✅ Implemented)
+- **`src/mcp/esg_analysis_provider.py`**: ESG metrics calculation (🚧 Student task)
+- **`src/mcp/registry.py`**: Provider discovery and management
+
+For students: See [STUDENT_GUIDE.md](STUDENT_GUIDE.md) for implementation details.
 
 ## 🚀 Getting Started
 

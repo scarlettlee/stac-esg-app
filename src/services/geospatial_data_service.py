@@ -27,7 +27,7 @@ def fetch_geospatial_data(collection_id, bbox, time_range):
     )
     
     # Get all items
-    items = list(search.get_items())
+    items = list(search.items())
     if not items:
         return None, "No items found for the given parameters"
     
