@@ -261,6 +261,11 @@ This project uses environment variables for configuration. Follow these steps to
    streamlit run src/app.py
    ```
 
+5. **Run the MCP test** 
+   ```bash
+   python src/examples/mcp_test.py
+   ```
+
 ### Option 2: Docker Development
 
 1. **Build and run with Docker Compose**
@@ -429,99 +434,6 @@ This project uses environment variables for configuration. Follow these steps to
 - **`fetch_geospatial_data(collection_id, bbox, time_range)`**: Fetch actual data from STAC collections
 - **`load_and_display_data(item, url, data_type)`**: Process and visualize geospatial data
 
-## 🔧 Contributing
-
-### How to Contribute
-
-1. **Fork the repository**
-2. **Create a feature branch**
-3. **Make your changes**
-4. **Test thoroughly**
-5. **Submit a pull request**
-
-### Pull Request Guidelines
-
-- **Clear description** of what the PR accomplishes
-- **Screenshots** for UI changes
-- **Test coverage** for new functionality
-- **Documentation updates** if needed
-
-### Code Review Process
-
-1. **Self-review** your code before submitting
-2. **Peer review** by at least one team member
-3. **Address feedback** and make necessary changes
-4. **Merge** after approval
-
-## 🐛 Troubleshooting
-
-### Common Issues
-
-#### **Google Gemini API Errors**
-- Verify your API key is correct
-- Check API usage limits and billing
-- Ensure the API key has proper permissions
-
-#### **STAC API Issues**
-- Verify internet connectivity
-- Check if Microsoft Planetary Computer is accessible
-- Review API rate limits
-
-#### **Geocoding Failures**
-- Ensure location names are specific and accurate
-- Check Nominatim service availability
-- Verify location format (city, country)
-
-#### **Docker Issues**
-- Ensure Docker is running
-- Check port availability (8080)
-- Verify environment variables are set
-
-#### **Streamlit Errors**
-- Check Python version compatibility
-- Verify all dependencies are installed
-- Review Streamlit configuration
-
-#### **Environment Setup Issues**
-- Ensure `.env` file exists in the root directory
-- Verify API keys are correctly formatted (no extra spaces or quotes)
-- Check that `env_template.txt` was copied to `.env` (not just renamed)
-- Confirm API keys are valid and have sufficient credits
-- For Windows users: Use `copy` command, not `cp`
-
-### Getting Help
-
-1. **Check the logs** for detailed error messages
-2. **Review the documentation** for common solutions
-3. **Search existing issues** in the repository
-4. **Create a new issue** with detailed information
-
-## 📈 Future Enhancements
-
-### Short-term (Next 2-4 weeks)
-- [ ] Enhanced error handling and user feedback
-- [ ] Data validation improvements
-- [ ] Performance optimization and caching
-- [ ] Mobile-responsive design improvements
-
-### Medium-term (Next 1-2 months)
-- [ ] Advanced analytics and statistical analysis
-- [ ] Export capabilities (PDF reports, data downloads)
-- [ ] User management and role-based access
-- [ ] Historical ESG performance tracking
-
-### Long-term (Next 3-6 months)
-- [ ] Comparative industry benchmarking
-- [ ] Machine learning for ESG risk prediction
-- [ ] Integration with additional data sources
-- [ ] Advanced visualization and dashboard features
-
-## 📞 Support & Contact
-
-- **Project Lead**: [Your Name]
-- **Team Repository**: [GitHub Repository URL]
-- **Documentation**: [Project Wiki/Docs URL]
-- **Issue Tracker**: [GitHub Issues URL]
 
 ## 📄 License
 
