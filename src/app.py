@@ -11,7 +11,6 @@ from services.gemini_service import generate_esg_insights
 from services.openai_service import generate_text
 from services.geospatial_data_service import fetch_geospatial_data, load_and_display_data
 from utils.extract_subsector_info import extract_subsector_info
-from streamlit_folium import st_folium
 import matplotlib.pyplot as plt
 from rasterio.plot import show
 import logging
@@ -250,9 +249,12 @@ def display_results():
         # Create two columns for map and insights
         col1, col2 = st.columns([3, 2])
         
-        with col1:            
-            map = display_area_map(st.session_state.bbox)
-            st_folium(map, width=None, height=600)
+        with col1:
+            # Display Google Maps (exclusive mapping solution)
+            display_area_map(
+                st.session_state.bbox,
+                location_name=st.session_state.location_name
+            )
             
         with col2:
             # Display collection information

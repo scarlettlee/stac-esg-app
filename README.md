@@ -11,6 +11,7 @@ A comprehensive web application that combines **ESG (Environmental, Social, Gove
 - [Getting Started](#getting-started)
 - [Development Setup](#development-setup)
 - [Deployment](#deployment)
+- [Documentation](#documentation)
 - [Team Development Guide](#team-development-guide)
 - [API Documentation](#api-documentation)
 - [Contributing](#contributing)
@@ -267,6 +268,15 @@ This project uses environment variables for configuration. Follow these steps to
        --region us-central1 \
        --allow-unauthenticated
    ```
+
+## 📚 Documentation
+
+Additional documentation is available in the [`docs/`](docs/) folder:
+
+- **[Architecture Summary](docs/ARCHITECTURE_SUMMARY.md)** - Comprehensive architecture and logical flow documentation
+- **[Google Maps & MCP Integration](docs/GOOGLE_MAPS_AND_MCP_INTEGRATION.md)** - Guide for using Google Maps and Model Context Protocol
+- **[Integration Summary](docs/INTEGRATION_SUMMARY.md)** - Overview of recent integrations
+- **[Docker Instructions](docs/DOCKER_INSTRUCTIONS.md)** - Step-by-step Docker setup and usage guide
 
 ## 👥 Team Development Guide
 
