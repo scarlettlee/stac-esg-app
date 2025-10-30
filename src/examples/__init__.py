@@ -1,1 +1,4 @@
-# Package initialization for examples
+"""
+Examples directory for demonstrating MCP and Google Maps integration.
+"""
+
